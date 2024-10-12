@@ -1,0 +1,1 @@
+{"Orange-050D": {"network_type": 'Infrastructure', 'authentication': 'WPA2-Personal', 'encryption': 'CCMP', 'bssids': {}, 'bssid_1': '60:aa:ef:bd:05:0d', 'signal': '83%', 'radio_type': '802.11n', 'band': '2.4 GHz', 'channel': '6', 'basic_rates_(mbps)': '1 2 5.5 11', 'other_rates_(mbps)': '6 9 12 18 24 36 48 54'}}

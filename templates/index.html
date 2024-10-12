@@ -20,6 +20,19 @@
         </tbody>
     </table>
 
+    <h1>Available Wi-Fi Networks</h1>
+    <table id="ssidTable" border="1">
+        <thead>
+            <tr>
+                <th>SSID</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h1>BSSID Details</h1>
+    <div id="selectedSSIDDetails"></div>
+
     <script>
         function updateSignal() {
             console.log("Fetching data...");
@@ -43,6 +56,48 @@
         // Call updateSignal every 5 seconds to update the table in real-time
         setInterval(updateSignal, 5000);
         updateSignal();  // Initial call to load data
+
+        function updateSSIDTable() {
+            $.getJSON('/get_available_ssids', function(ssids) {
+                const tbody = $('#ssidTable tbody');
+                tbody.empty(); // Clear existing rows
+                ssids.forEach(function(ssid) {
+                    tbody.append(`<tr><td class="ssid-row" data-ssid="${ssid}">${ssid}</td></tr>`);
+                });
+            });
+        }
+        function getSelectedSSIDInfo(ssid) {
+            $.getJSON('/get_bssid_info', function(data) {
+                // Log the received data for troubleshooting
+                console.log("BSSID Info Data:", data);
+                // Construct the expected key format for the selected SSID
+                // Find the specific SSID details in the data
+                const ssidDetails = data[ssid];
+                const detailsDiv = $('#selectedSSIDDetails');
+                detailsDiv.empty(); // Clear existing details
+
+                // Log the ssidKey being searched
+                console.log("Searching for SSID Key:", ssid);
+
+                if (!ssidDetails) {
+                    detailsDiv.append(`<p>No details available for SSID: ${ssid}</p>`);
+                } else {
+                    detailsDiv.append(`<pre>${ssidDetails}</pre>`);
+                }
+            });
+        }
+
+        // Set up click event for SSID rows
+        $(document).on('click', '.ssid-row', function() {
+            const ssid = $(this).data('ssid');
+            getSelectedSSIDInfo(ssid);
+        });
+
+        // Call functions to populate the tables initially
+        updateSSIDTable();
+
+        // Set intervals to update tables every 5 seconds
+        setInterval(updateSSIDTable, 5000);
     </script>
 </body>
 </html>
