@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wi-Fi Signal Strength</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Wi-Fi Signal Strength</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Interface Name</th>
+                <th>Signal (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="interface-name">Loading...</td>
+                <td id="signal-strength">Loading...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        function updateSignal() {
+            console.log("Fetching signal data...");  // Debug log for fetching
+
+            $.getJSON('/get_signal', function(data) {
+                console.log("Received data:", data);  // Debug log for received data
+
+                if (data) {
+                    $('#interface-name').text(data.interface_name);
+                    $('#signal-strength').text(data.signal_strength + '%');
+                } else {
+                    $('#interface-name').text('N/A');
+                    $('#signal-strength').text('N/A');
+                }
+            }).fail(function(jqxhr, textStatus, error) {
+                console.error("Request Failed: " + textStatus + ", " + error);  // Log request failure
+            });
+        }
+
+        setInterval(updateSignal, 5000);  // Update every 5 seconds
+        updateSignal();  // Initial call to load data
+    </script>
+</body>
+</html>
