@@ -3,46 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wi-Fi Signal Strength</title>
+    <title>Wi-Fi Information</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Wi-Fi Signal Strength</h1>
-    <table border="1">
+    <h1>Wi-Fi Information</h1>
+    <table border="1" id="wifi-info">
         <thead>
             <tr>
-                <th>Interface Name</th>
-                <th>Signal (%)</th>
+                <th>Property</th>
+                <th>Value</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td id="interface-name">Loading...</td>
-                <td id="signal-strength">Loading...</td>
-            </tr>
+            <!-- Rows will be dynamically added here -->
         </tbody>
     </table>
 
     <script>
         function updateSignal() {
-            console.log("Fetching signal data...");  // Debug log for fetching
-
+            console.log("Fetching data...");
             $.getJSON('/get_signal', function(data) {
-                console.log("Received data:", data);  // Debug log for received data
+                console.log("Received data:", data);
+                var tbody = $('#wifi-info tbody');
+                tbody.empty();  // Clear existing table rows
 
-                if (data) {
-                    $('#interface-name').text(data.interface_name);
-                    $('#signal-strength').text(data.signal_strength + '%');
-                } else {
-                    $('#interface-name').text('N/A');
-                    $('#signal-strength').text('N/A');
-                }
+                // Loop through each key-value pair and add it to the table
+                $.each(data, function(key, value) {
+                    var row = $('<tr></tr>');
+                    row.append('<td>' + key + '</td>');
+                    row.append('<td>' + value + '</td>');
+                    tbody.append(row);
+                });
             }).fail(function(jqxhr, textStatus, error) {
-                console.error("Request Failed: " + textStatus + ", " + error);  // Log request failure
+                console.error("Request Failed: " + textStatus + ", " + error);
             });
         }
 
-        setInterval(updateSignal, 5000);  // Update every 5 seconds
+        // Call updateSignal every 5 seconds to update the table in real-time
+        setInterval(updateSignal, 5000);
         updateSignal();  // Initial call to load data
     </script>
 </body>
